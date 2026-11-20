@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Modernization tasks for the Bhoomi Backend Java 25 LTS runtime upgrade.",
+  "tasks": [
+    {
+      "type": "upgrade",
+      "id": "001-upgrade-java-25-runtime",
+      "description": "Upgrade the Bhoomi Backend runtime from Java 21 to Java 25 LTS. Addresses assessment issue: Java Version is not the latest LTS.",
+      "reason": "The assessment identifies Java 21 as older than the latest LTS, and the project build and developer documentation currently specify Java 21.",
+      "requirements": "Upgrade only the Backend Java runtime target to Java 25 LTS. Update directly relevant build/runtime/container configuration and Backend documentation, preserving current application behavior. Retain Spring Boot 4.1.2 and avoid Jakarta/framework changes. No application runtime Dockerfile currently exists; do not modify the PostgreSQL/PostGIS database image or unrelated configuration. Validate with JDK 25 using the Maven Wrapper clean verify lifecycle; do not add tests for unrelated behavior.",
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "passUnitTests": "true"
+      }
+    },
+    {
+      "type": "security",
+      "id": "002-backend-runtime-dependency-cve-check",
+      "description": "Scan and remediate known CVEs in Backend direct dependencies relevant to the Java 25 runtime/build upgrade.",
+      "reason": "Confirm the runtime/build modernization does not leave known vulnerabilities in its directly affected dependencies.",
+      "requirements": "Limit CVE review and remediation to Backend direct dependencies relevant to the Java 25 runtime/build upgrade. Upgrade vulnerable dependencies to the minimum patched versions; document any required major-version change and its breaking-change risk. Verify the Backend build and existing tests pass. Do not address unrelated cloud-readiness findings or Frontend dependencies.",
+      "dependencies": [
+        "001-upgrade-java-25-runtime"
+      ],
+      "successCriteria": {
+        "passBuild": "true",
+        "generateNewUnitTests": "false",
+        "passUnitTests": "true"
+      }
+    }
+  ],
+  "metadata": {
+    "planName": "java-25-runtime-upgrade",
+    "projectName": "Bhoomi Backend",
+    "language": "java",
+    "createdAt": "2026-11-01T16:29:49.553+05:30",
+    "version": "1.0"
+  }
+}
